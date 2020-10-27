@@ -1,0 +1,38 @@
+import { GetServerSideProps } from "next";
+import api from "../services/api";
+import { Title } from "../styles/pages/Home";
+
+interface IProduct {
+  id: string;
+  title: string;
+}
+
+interface HomeProps {
+  recommendedProducts: IProduct[];
+}
+
+export default function Home({ recommendedProducts }: HomeProps) {
+  return (
+    <div>
+      <section>
+        <Title>Products</Title>
+
+        <ul>
+          {recommendedProducts.map((recommendedProduct) => (
+            <li key={recommendedProduct.id}>{recommendedProduct.title}</li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  );
+}
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+  const response = await api.get("/recommended");
+
+  return {
+    props: {
+      recommendedProducts: response.data,
+    },
+  };
+};
